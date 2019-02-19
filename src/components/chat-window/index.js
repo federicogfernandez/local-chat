@@ -32,10 +32,15 @@ class ChatWindow extends Component {
   componentDidMount() {
     navigator.serviceWorker.addEventListener('message', event => {
       const { conversation } = this.state;
+      const data = JSON.parse(event.data);
 
-      this.transformMessage(event.data)
+      this.transformMessage(data)
         .then((message) => {
           conversation.messages.push(message);
+
+          this.setState({
+            conversation,
+          });
         })
         .catch(console.log);  
 

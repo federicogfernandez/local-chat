@@ -4,11 +4,30 @@ import moment from 'moment';
 import './styles.scss';
 
 class Conversation extends Component {
+  constructor(props) {
+    super(props);
+
+    this.component = React.createRef();
+  }
+
+  componentDidMount() {
+    this.scrollToBottom();
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom() {
+    const component = this.component.current;
+    component.scrollTop = component.scrollHeight;
+  }
+
   render() {
     const { conversation } = this.props;
 
     return (
-      <div className="conversation">
+      <div className="conversation" ref={this.component}>
         <ul className="conversation__list">
           {conversation.messages && conversation.messages.map((message) => (
             <li className="message" key={message.id}>
