@@ -4,7 +4,7 @@ const db = new Dexie('chat');
 db.version(1).stores({
   users: '++id, username, name, avatar',
   messages: '++id, sender, conversation, content, timestamp',
-  conversations: '++id, name, participants',
+  conversations: '++id, name, avatar, participants',
 });
 
 db.users

@@ -52,8 +52,8 @@ class Conversation extends Component {
 }
 
 Conversation.propTypes = {
-  userId: PropTypes.number.isRequired,
   conversation: PropTypes.object.isRequired,
+  conversationName: PropTypes.string.isRequired,
 };
 
 export default Conversation;

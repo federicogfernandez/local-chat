@@ -16,10 +16,10 @@ class TextBox extends Component {
   }
 
   sendMessage(message) {
-    const { userId, conversation } = this.props;
+    const { user, conversation } = this.props;
 
     Messages.send({
-      sender: userId,
+      sender: user.id,
       conversation: conversation.id,
       content: {
         type: 'text',
@@ -44,24 +44,14 @@ class TextBox extends Component {
     }
   }
 
-  getConversationName() {
-    const { conversation, userId } = this.props;
-
-    if(conversation.participants.length > 2) {
-      return conversation.name;
-    }
-
-    return conversation.participants.find((user) => user.id !== userId).name;
-  }
-
   render() {
-    const name = this.getConversationName();
+    const { headerData } = this.props;
 
     return (
       <div className="text-box">
         <div 
           className="text-box__box"
-          placeholder={`Write a message to ${name}`}
+          placeholder={`Write a message to ${headerData.name}`}
           onKeyUp={this.onKeyUp}
           onKeyPress={this.onKeyPress}
           ref={this.box}
@@ -78,8 +68,9 @@ class TextBox extends Component {
 }
 
 TextBox.propTypes = {
-  userId: PropTypes.number.isRequired,
+  user: PropTypes.object.isRequired,
   conversation: PropTypes.object.isRequired,
+  headerData: PropTypes.object.isRequired,
 };
 
 export default TextBox;
