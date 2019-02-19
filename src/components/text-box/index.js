@@ -51,7 +51,7 @@ class TextBox extends Component {
       conversation: conversation.id,
       content: {
         type: 'event',
-        value: `${user.name} is typing...`,
+        value: 'typing',
       },
     });
   }

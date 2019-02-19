@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import Dots from '../dots';
 
 import './styles.scss';
 
@@ -26,8 +27,15 @@ class Message extends Component {
             </div>
           </Fragment>
         }
-        {message.content.type === 'event' &&
-          <span className="message__event">{message.content.value}</span>
+        {message.content.type === 'event' && message.content.value === 'typing' &&
+          <Fragment>
+            <div className="message__avatar">
+              <img src={message.sender.avatar} alt={message.sender.name} />
+            </div>
+            <div className="content">
+              <Dots />
+            </div>
+          </Fragment>
         }
       </li>
     );

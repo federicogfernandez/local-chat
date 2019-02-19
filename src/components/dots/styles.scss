@@ -1,0 +1,90 @@
+.dots {
+  width: 40px;
+  position: absolute;
+  top: 70%;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  &__dot {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;    
+    -webkit-animation: bouncedelay 3.0s infinite cubic-bezier(.62, .28, .23, .99) both;
+    animation: bouncedelay 3.0s infinite cubic-bezier(.62, .28, .23, .99) both;
+  }
+
+  &--dot1 {
+    -webkit-animation-delay: -.16s;
+    animation-delay: -.16s;
+  }
+
+  &--dot2 {
+    -webkit-animation-delay: -.08s;
+    animation-delay: -.08s;
+  }
+}
+
+@keyframes bouncedelay {
+  0% {
+    bottom: 0;
+    background-color: #03A9F4;
+  }
+  16.66% {
+    bottom: 30px;
+    background-color: #FB6542;
+  }
+  33.33% {
+    bottom: 0px;
+    background-color: #FB6542;
+  }
+  50% {
+    bottom: 30px;
+    background-color: #FFBB00;
+  }
+  66.66% {
+    bottom: 0px;
+    background-color: #FFBB00;
+  }
+  83.33% {
+    bottom: 30px;
+    background-color: #03A9F4;
+  }
+  100% {
+    bottom: 0;
+    background-color: #03A9F4;
+  }
+}
+
+@-webkit-keyframes bouncedelay {
+  0% {
+    bottom: 0;
+    background-color: #03A9F4;
+  }
+  16.66% {
+    bottom: 30px;
+    background-color: #FB6542;
+  }
+  33.33% {
+    bottom: 0px;
+    background-color: #FB6542;
+  }
+  50% {
+    bottom: 30px;
+    background-color: #FFBB00;
+  }
+  66.66% {
+    bottom: 0px;
+    background-color: #FFBB00;
+  }
+  83.33% {
+    bottom: 43px;
+    background-color: #03A9F4;
+  }
+  100% {
+    bottom: 0;
+    background-color: #03A9F4;
+  }
+}
