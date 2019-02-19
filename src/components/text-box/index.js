@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import debounce from 'lodash.debounce';
 import Messages from '../../services/messages';
 
 import './styles.scss';
@@ -8,9 +9,16 @@ class TextBox extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      lastTyping: 0,
+    };
+
     this.sendMessage = this.sendMessage.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
+    this.sendTypingEvent = debounce(this.sendTypingEvent.bind(this), 600, {
+      leading: true,
+    });
 
     this.box = React.createRef();
   }
@@ -28,15 +36,42 @@ class TextBox extends Component {
     });
   }
 
+  sendTypingEvent() {
+    const { user, conversation } = this.props;
+
+    this.setState({
+      lastTyping: Date.now(),
+    });
+
+    Messages.send({
+      sender: user.id,
+      conversation: conversation.id,
+      content: {
+        type: 'event',
+        value: `${user.name} is typing...`,
+      },
+    });
+  }
+
   onKeyPress(e) {
     if (!e.shiftKey && e.key === 'Enter') {
       e.preventDefault();
+    }
+
+    const { lastTyping } = this.state;
+
+    if(lastTyping === 0 || Date.now() - lastTyping > 3000) {
+      this.sendTypingEvent();
     }
   }
 
   onKeyUp(e) {
     if (!e.shiftKey && e.key === 'Enter') {
       const box = this.box.current;
+
+      this.setState({
+        lastTyping: 0,
+      });
 
       this.sendMessage(box.innerHTML);
 

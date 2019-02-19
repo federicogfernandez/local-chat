@@ -25,24 +25,7 @@ class ChatWindow extends Component {
   }
 
   componentDidMount() {
-    navigator.serviceWorker.addEventListener('message', event => {
-      const { conversation } = this.state;
-      const data = JSON.parse(event.data);
-
-      this.transformMessage(data)
-        .then((message) => {
-          conversation.messages.push(message);
-
-          this.setState({
-            conversation,
-          });
-        })
-        .catch(console.log);  
-
-      this.setState({
-        conversation,
-      });
-    });
+    this.listenForNewMessages();
   }
 
   getConversation() {
@@ -72,16 +55,6 @@ class ChatWindow extends Component {
       .catch(console.log);
   }
 
-  transformMessage(message) {
-    return Users
-      .getById(message.sender)
-      .then((user) => {
-        message.sender = user;
-
-        return message;
-      });
-  }
-
   getConversationHeaderData(conversation) {
     const { userId } = this.props;
 
@@ -100,6 +73,55 @@ class ChatWindow extends Component {
       name,
       avatar,
     };
+  }
+
+  listenForNewMessages() {
+    navigator.serviceWorker.addEventListener('message', event => {
+      const { userId } = this.props;
+      const { conversation } = this.state;
+      const message = JSON.parse(event.data);
+      
+      if (message.content.type !== 'event' || (message.content.type === 'event' && message.sender.id !== userId)) {
+        conversation.messages = conversation.messages.filter((message) => message.content.type !== 'event');
+
+        conversation.messages.push(message);
+
+        this.setState({
+          conversation,
+        });
+
+        clearInterval(this.clearEvents);
+
+        if (message.content.type === 'event') {
+          this.startClearEvents();
+        }
+      }
+    });
+  }
+
+  startClearEvents() {
+    const time = 3000;
+
+    this.clearEvents = setInterval(() => {
+      const { conversation } = this.state;
+      const event = conversation.messages.find((message) => message.content.type === 'event');
+
+      if (event !== -1 && Date.now() - event.timestamp > time) {
+        clearInterval(this.clearEvents);
+
+        this.deleteEvents();
+      }
+    }, time);
+  }
+
+  deleteEvents() {
+    const { conversation } = this.state;
+
+    conversation.messages = conversation.messages.filter((message) => message.content.type !== 'event');
+
+    this.setState({
+      conversation,
+    });
   }
 
   render() {

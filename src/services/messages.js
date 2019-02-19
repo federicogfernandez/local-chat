@@ -1,20 +1,36 @@
 import Dexie from 'dexie';
 import db from './store';
+import Users from './users';
 
 const all = Dexie.Promise.all;
+
+function addSenderAndSendPostMessage(message) {
+  return Users
+    .getById(message.sender)
+    .then((user) => {
+      message.sender = user;
+
+      navigator.serviceWorker.controller.postMessage(JSON.stringify(message));
+
+      return message;
+    });
+}
 
 class Messages {
   static send(message) {
     message.timestamp = Date.now();
     
-    return db.messages
-      .put(message)
-      .then((key) => {
-        message.id = key;
-        navigator.serviceWorker.controller.postMessage(JSON.stringify(message));
+    if(message.content.type !== 'event') {
+      return db.messages
+        .put(message)
+        .then((key) => {
+          message.id = key;
 
-        return message;
-      });
+          return addSenderAndSendPostMessage(message);
+        });
+    }
+
+    return addSenderAndSendPostMessage(message);
   }
 
   static getByConversationId(conversation) {
