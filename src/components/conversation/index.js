@@ -1,45 +1,40 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import moment from 'moment';
 import './styles.scss';
 
 class Conversation extends Component {
   render() {
-    const { sender, receiver } = this.props;
+    const { conversation } = this.props;
 
     return (
       <div className="conversation">
         <ul className="conversation__list">
-          <li className="message">
-            <div className="message__avatar">
-              <img src={sender.avatar} alt={sender.firstName} />
-            </div>
-            <div className="content">
-              <div className="sender">
-                <span className="sender__name">{sender.firstName}</span>
-                <span className="sender__time">Today 13:03hs</span>
+          {conversation.messages && conversation.messages.map((message) => (
+            <li className="message" key={message.id}>
+              <div className="message__avatar">
+                <img src={message.sender.avatar} alt={message.sender.name} />
               </div>
-              <div className="content__text">
-                <span>Hi ruiz!</span>
+              <div className="content">
+                <div className="sender">
+                  <span className="sender__name">{message.sender.name}</span>
+                  <span className="sender__time">{moment(message.timestamp).fromNow()}</span>
+                </div>
+                <div className="content__text">
+                  <span dangerouslySetInnerHTML={{ __html: message.content.value }}></span>
+                </div>
               </div>
-            </div>
-          </li>
-          <li className="message">
-            <div className="message__avatar">
-              <img src={receiver.avatar} alt={receiver.firstName} />
-            </div>
-            <div className="content">
-              <div className="sender">
-                <span className="sender__name">{receiver.firstName}</span>
-                <span className="sender__time">Today 13:03hs</span>
-              </div>
-              <div className="content__text">
-                <span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</span>
-              </div>
-            </div>
-          </li>
+            </li>
+          ))}
         </ul>
       </div>
     );
   }
 }
+
+Conversation.propTypes = {
+  userId: PropTypes.number.isRequired,
+  conversation: PropTypes.object.isRequired,
+};
 
 export default Conversation;

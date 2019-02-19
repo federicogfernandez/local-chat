@@ -1,6 +1,7 @@
 .conversation {
   height: 100%;
   padding: 10px;
+  overflow: auto;
 
   &__list {
     width: 100%;
