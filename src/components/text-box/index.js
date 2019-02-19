@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
+import { Picker } from 'emoji-mart';
+import Trigger from 'rc-trigger';
 import Messages from '../../services/messages';
 
 import './styles.scss';
@@ -16,6 +18,7 @@ class TextBox extends Component {
     this.sendMessage = this.sendMessage.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
+    this.onEmojiSelect = this.onEmojiSelect.bind(this);
     this.sendTypingEvent = debounce(this.sendTypingEvent.bind(this), 600, {
       leading: true,
     });
@@ -79,6 +82,12 @@ class TextBox extends Component {
     }
   }
 
+  onEmojiSelect(emoji) {
+    const box = this.box.current;
+
+    box.innerHTML = box.innerHTML + emoji.native;
+  }
+
   render() {
     const { headerData } = this.props;
 
@@ -96,6 +105,20 @@ class TextBox extends Component {
           <button className="actions__send" onClick={this.sendMessage}>
             <img src="/icons/send-button.svg" alt="Send" />
           </button>
+          <Trigger
+            action={['click']}
+            popup={
+              <Picker native onSelect={this.onEmojiSelect} />
+            }
+            popupAlign={{
+              points: ['br', 'tr'],
+              offset: [-5, 0]
+            }}
+          >
+            <button className="actions__emoji" onClick={this.toggleEmojiSelector}>
+              <img src="/icons/emoji-button.svg" alt="Send" />
+            </button>
+          </Trigger>
         </div>
       </div>
     );
